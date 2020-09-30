@@ -1,3 +1,9 @@
 [submodule "slam_gmapping"]
 	path = slam_gmapping
 	url = https://github.com/ros-perception/slam_gmapping.git
+[submodule "hector_slam"]
+	path = hector_slam
+	url = https://github.com/tu-darmstadt-ros-pkg/hector_slam.git
+[submodule "robot_base_process/ira_laser_tools"]
+	path = robot_base_process/ira_laser_tools
+	url = https://github.com/iralabdisco/ira_laser_tools.git
