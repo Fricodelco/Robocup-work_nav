@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 import actionlib
@@ -20,7 +20,7 @@ import numpy as np
 class Explorer:
     def __init__(self):
 	
-	self.psoe_sub = rospy.Subscriber("target_pose", Point, self.pose_cb)
+        self.psoe_sub = rospy.Subscriber("target_pose", Point, self.pose_cb)
         self.status_pub = rospy.Publisher("navigation_result", Bool, queue_size = 5)
         self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
         self.client.wait_for_server()
@@ -37,7 +37,7 @@ class Explorer:
         print(status)
         print(type(status))
         if(status == True or status == 3):
-            print"I successfuly reached goal"
+            print("I successfuly reached goal")
             status_msg.data = True
         else:
             print("Move base failed with status : {}".format(status))

@@ -61,7 +61,7 @@ def jstatecb(jointstatesraw):
         hls_quat = tf.transformations.quaternion_from_euler(pi,0,pi)
         lidar_broadcaster.sendTransform((-0.295,0.0,0.03),hls_quat,rospy.Time.now(),"laser_hokuyo_2","base_link")
         hokuyo_quat = tf.transformations.quaternion_from_euler(pi,0,0)
-        lidar_broadcaster.sendTransform((0.295,0.0,0.03),hokuyo_quat,rospy.Time.now(),"laser_hokuyo","base_link")
+        lidar_broadcaster.sendTransform((0.285,0.0,0.03),hokuyo_quat,rospy.Time.now(),"laser_hokuyo","base_link")
         
         #publishing  
         pubodom.publish(odom)

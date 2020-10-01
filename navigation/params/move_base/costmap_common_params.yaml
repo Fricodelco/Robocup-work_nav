@@ -30,6 +30,5 @@ cost_scaling_factor: 4.0
 lethal_cost_threshold: 80
 
 #Configuration for the sensors that the costmap will use to update a map
-observation_sources: hokuyo_2 hokuyo
-hokuyo_2: {sensor_frame: laser_hokuyo_2, data_type: LaserScan, topic: scan, marking: true, clearing: true, expected_update_rate: 10}
-hokuyo: {sensor_frame: laser_hokuyo, data_type: LaserScan, topic: scan, marking: true, clearing: true, expected_update_rate: 40}
+observation_sources: hokuyo
+hokuyo: {sensor_frame: base_link, data_type: LaserScan, topic: scan, marking: true, clearing: true, expected_update_rate: 30}
