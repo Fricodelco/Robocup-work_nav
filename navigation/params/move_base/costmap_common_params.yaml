@@ -23,8 +23,8 @@ footprint: [[-0.25, -0.03], [-0.2, -0.03], [-0.2, -0.17], [0.19, -0.17], [0.26, 
 footprint_padding: 0.02
 
 #Cost function parameters
-inflation_radius: 0.5
-cost_scaling_factor: 4.0
+inflation_radius: 0.6
+cost_scaling_factor: 6.0
 
 #The cost at which a cell is considered an obstacle when a map is read from the map_server
 lethal_cost_threshold: 80

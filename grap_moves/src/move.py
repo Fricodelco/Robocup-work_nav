@@ -47,20 +47,21 @@ class ParkController:
 			self.initial_pose_pub.publish(self.initial_pose)
 			sleep(0.1)
 	def service_cb(self, req):
+		# print(req.dist)
 		if req.cmd == "front":
 			while(self.parking_front(0) == False):
 				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
 		if req.cmd == "right":
-			for i in range(10):
-				self.parking_front(0.11)
+			for i in range(int(req.dist*100)):
+				self.parking_front(0.1)
 				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
 		if req.cmd == "left":
-			for i in range(10):
-				self.parking_front(-0.11)
+			for i in range(int(req.dist*100)):
+				self.parking_front(-0.1)
 				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
