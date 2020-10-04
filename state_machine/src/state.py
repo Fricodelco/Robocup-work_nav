@@ -17,25 +17,43 @@ from std_msgs.msg import Bool
 import tf
 from math import pi, cos, sin, sqrt, atan2
 import numpy as np
-
+import json
+import os
 class state_machine:
 	def __init__(self):
 		self.status_pub = rospy.Publisher("navigation_result", Bool, queue_size = 5)
 		self.client_move_base = actionlib.SimpleActionClient('move_base',MoveBaseAction)
 		self.client_move_base.wait_for_server()
 		self.move_robot_srv = rospy.ServiceProxy('move_robot', DistCmd)
-		print(self.reach_goal(-0.066,0.394,1.7))
-		print(self.move_robot("front"))
-		print(self.move_robot("right",0.15))
-		print(self.move_robot("left",0.15))
-		print(self.move_robot("back"))
-		print(self.reach_goal(0,0,0))
+		self.table_coordinates = self.get_tables_coordinates()
+		# print(self.table_coordinates['t_1'])
+		self.to_table("exit")
+		# print(self.move_robot("front"))
 		
+		# print(self.move_robot("right",0.15))
+		# prin/t(self.move_robot("left",0.15))
+		# print(self.move_robot("back"))
+		# print(self.reach_goal(self.table_coordinates['exit']))
+		# print(self.reach_goal(self.table_coordinates['home']))
+		
+	def to_table(self, table):
+		self.reach_goal(self.table_coordinates[table])
+		self.move_robot("front")
+	def get_tables_coordinates(self):
+		dir_path = os.path.dirname(os.path.realpath(__file__))	
+		with open(dir_path+"/points.json", "r") as read_file:
+			data = json.load(read_file)
+		table_coord = dict(zip(data["table_id"], data["table_coordinate"]))	
+		return table_coord
+
 	def move_robot(self, movement, length=0.0): #front, left, right, back, length of side transmition
 		resp = self.move_robot_srv(movement, length)
 		return resp.result
 
-	def reach_goal(self, x, y, theta): #go to target point 
+	def reach_goal(self, coord): #go to target point 
+		x = coord[0]
+		y = coord[1]
+		theta = coord[2]
 		target_quat = tf.transformations.quaternion_from_euler(0, 0, theta)
 		t0=rospy.Time.now()
 		goal=MoveBaseGoal()
