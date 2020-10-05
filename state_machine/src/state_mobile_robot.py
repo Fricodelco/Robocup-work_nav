@@ -19,26 +19,40 @@ from math import pi, cos, sin, sqrt, atan2
 import numpy as np
 import json
 import os
-class state_machine:
+class Mobile_Robot_Machine:
 	def __init__(self):
-		self.status_pub = rospy.Publisher("navigation_result", Bool, queue_size = 5)
 		self.client_move_base = actionlib.SimpleActionClient('move_base',MoveBaseAction)
 		self.client_move_base.wait_for_server()
 		self.move_robot_srv = rospy.ServiceProxy('move_robot', DistCmd)
 		self.table_coordinates = self.get_tables_coordinates()
-		# print(self.table_coordinates['t_1'])
-		self.to_table("t_5")
+		# print(self.table_coordinates)
+		# self.to_home()
+		# print(self.table_coordinates['t_2'])
+		# print(self.to_table("t_6"))
 		# print(self.move_robot("front"))
 		
 		# print(self.move_robot("right",0.1))
 		# print(self.move_robot("left",0.1))
 		# print(self.move_robot("back"))
-		# print(self.reach_goal(self.table_coordinates['exit']))
+		# print(self.reach_goal(self.table_coordinates['t_7']))
 		# print(self.reach_goal(self.table_coordinates['home']))
 		
 	def to_table(self, table):
-		self.reach_goal(self.table_coordinates[table])
-		self.move_robot("front")
+		result = self.reach_goal(self.table_coordinates[table])
+		if result == 3:
+			result = self.move_robot("front")
+			return result
+		else:
+			return False
+	def to_home(self):
+		result = self.reach_goal(self.table_coordinates["home"])
+		if result == 3:
+			return True
+	def to_exit(self):
+		result = self.reach_goal(self.table_coordinates["exit"])
+		if result == 3:
+			return True
+	
 	def get_tables_coordinates(self):
 		dir_path = os.path.dirname(os.path.realpath(__file__))	
 		with open(dir_path+"/points.json", "r") as read_file:
@@ -75,12 +89,12 @@ class state_machine:
 		return self.client_move_base.get_state()
 
 
-if __name__ == '__main__':
-	rospy.init_node('state_machine')
-	state = state_machine()
-	try:
-		rospy.spin()
-	except KeyboardInterrupt:
-		print("Shutting down")
+# if __name__ == '__main__':
+	# rospy.init_node('state_machine')
+	# state = Mobile_Robot_Machine()
+	# try:
+		# rospy.spin()
+	# except KeyboardInterrupt:
+		# print("Shutting down")
 
         
