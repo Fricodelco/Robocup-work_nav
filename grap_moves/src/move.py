@@ -55,20 +55,20 @@ class ParkController:
 			return DistCmdResponse(True)
 		if req.cmd == "right":
 			for i in range(int(req.dist*100)):
-				self.parking_front(0.1)
+				self.parking_front(-0.1)
 				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
 		if req.cmd == "left":
 			for i in range(int(req.dist*100)):
-				self.parking_front(-0.1)
+				self.parking_front(0.1)
 				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
 		if req.cmd == "back":
-			for i in range(10):
-				self.speed_publisher(-0.15,0,0)
-				sleep(0.12)
+			for i in range(20):
+				self.speed_publisher(-0.1,0,0)
+				sleep(0.1)
 			self.speed_publisher(0,0,0)
 			return DistCmdResponse(True)
 

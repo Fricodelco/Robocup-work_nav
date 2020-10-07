@@ -85,7 +85,7 @@ class Mobile_Robot_Machine:
 					allocated time")
 			self.client_move_base.cancel_goal()    
 		else:
-			print("reach the goal")
+			print("reach the goal","\n--------")
 		return self.client_move_base.get_state()
 
 

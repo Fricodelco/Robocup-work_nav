@@ -2,6 +2,7 @@
 import rospy
 import tf
 import numpy as np
+from math import sin, cos
 from inverse_problem_srv.srv import point_cmd,point_cmdResponse
 from std_srvs.srv import SetBool,Empty
 import socket
@@ -12,13 +13,15 @@ sync_i = 0
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(server_address)
 delay = 0.1
+home_pose = '90 0 170 0'
+gripper = True
 angle_arm_srv = rospy.ServiceProxy('/angle_robot/cmd_point',point_cmd)
 angle_grip_srv = rospy.ServiceProxy('/angle_robot/gripper_cmd',SetBool)
 angle_search = rospy.ServiceProxy('/angle_robot/searching_pose',Empty)
 
 def convert_point_coordinate(point_cam):
     point_cam_ar = np.array(point_cam[:-1]+[1000])/1000
-    point_cam_ar[2] = point_cam_ar[2]+0.008
+    point_cam_ar[2] = point_cam_ar[2]+0.014
     listener.waitForTransform("world", "camera", rospy.Time(), rospy.Duration(4.0))
     (trans,rot) = listener.lookupTransform("world", "camera", rospy.Time(0))
     euler_rot = tf.transformations.euler_from_quaternion(rot)
@@ -31,7 +34,6 @@ def grasp_object(cmd):
     angle_search()
     msg = 'c:'+str(sync_i)+':'+cmd.point
     sock.sendto(msg.encode(),camera_address)
-    start_time = rospy.get_time()
     while True:
         data, address = sock.recvfrom(128)
         if not data == None:
@@ -50,28 +52,35 @@ def grasp_object(cmd):
     #print(point_in_cam)
     point_in_arm = convert_point_coordinate(point_in_cam)
     #print(point_in_arm)
+    point_in_arm[0] = point_in_arm[0] - 18*cos(point_in_arm[-1])
+    point_in_arm[1] = point_in_arm[1] - 18*sin(point_in_arm[-1])
+    #print(point_in_arm)
+    #print(point_in_arm)
     point_in_arm_str2 = list(map(str,point_in_arm))
     point_in_arm_str2 = ' '.join(point_in_arm_str2)
     point_in_arm[2] = point_in_arm[2]+30
     point_in_arm_str1 = list(map(str,point_in_arm))
     point_in_arm_str1 = ' '.join(point_in_arm_str1)
-
     res = angle_arm_srv(point_in_arm_str1)
     if(not res.result):
         print('unreachible1')
         return point_cmdResponse(False)
+    rospy.sleep(3.0)
     res = angle_arm_srv(point_in_arm_str2)
     if(res.result):
         angle_grip_srv(False)
     else:
         print('unreachible2')
         return point_cmdResponse(False)
-    res = angle_arm_srv(point_in_arm_str1)
+    #res = angle_arm_srv(point_in_arm_str1)
     return point_cmdResponse(True)
 
 if __name__=='__main__':
     global listener
     rospy.init_node('main_arm_control_node')
     listener = tf.TransformListener()
+    rospy.wait_for_service('/angle_robot/cmd_point')
+    angle_arm_srv(home_pose)
+    angle_grip_srv(gripper)
     rospy.Service('/angle_robot/grasp_object',point_cmd,grasp_object)
     rospy.spin()

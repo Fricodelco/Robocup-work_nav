@@ -9,11 +9,14 @@ global_costmap:
   update_frequency: 1.0
   publish_frequency: 1.0
   transform_tolerance: 1.0
+  width: 7
+  height: 7
+  resolution: 0.03
   #We'll use a map served by the map_server to initialize this costmap
   static_map: true
   rolling_window: false
   inflation_radius: 1.0
-  cost_scaling_factor: 3.0
+  cost_scaling_factor: 4.0
 
-  footprint_padding: 0.03
+  footprint_padding: 0.1
 

@@ -24,6 +24,7 @@
     <param name="frame_id" value="laser_hokuyo"/>    
     <param name="min_ang" type="double" value="-1.7"/>
     <param name="max_ang" type="double" value="1.7"/>
+    <param name="cluster" type="double" value="3"/>
 
   </node> 
    <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
